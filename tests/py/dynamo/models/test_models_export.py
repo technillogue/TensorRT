@@ -184,10 +184,10 @@ def test_resnet18_half(ir):
     torch._dynamo.reset()
 
 
-@unittest.skipIf(
-    torch.cuda.get_device_properties(torch.cuda.current_device()).major < 9,
-    "FP8 compilation in Torch-TRT is not supported on cards older than Hopper",
-)
+# @unittest.skipIf(
+#     torch.cuda.get_device_properties(torch.cuda.current_device()).major < 9,
+#     "FP8 compilation in Torch-TRT is not supported on cards older than Hopper",
+# )
 @pytest.mark.unit
 def test_base_fp8(ir):
     class SimpleNetwork(torch.nn.Module):
@@ -212,7 +212,7 @@ def test_base_fp8(ir):
     input_tensor = torch.randn(1, 10).cuda()
     model = SimpleNetwork().eval().cuda()
 
-    quant_cfg = mtq.FP8_DEFAULT_CFG
+    quant_cfg = mtq.INT8_DEFAULT_CFG
     mtq.quantize(model, quant_cfg, forward_loop=calibrate_loop)
     # model has FP8 qdq nodes at this point
     output_pyt = model(input_tensor)
@@ -223,7 +223,7 @@ def test_base_fp8(ir):
             trt_model = torchtrt.dynamo.compile(
                 exp_program,
                 inputs=[input_tensor],
-                enabled_precisions={torch.float8_e4m3fn},
+                enabled_precisions={torch.int8},
                 min_block_size=1,
                 debug=True,
             )
