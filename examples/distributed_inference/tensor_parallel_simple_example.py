@@ -12,12 +12,66 @@ from torch.distributed.tensor.parallel import (
     RowwiseParallel,
     parallelize_module,
 )
-
+import ctypes
+import numpy as np
 """
 This example copies some code from https://github.com/pytorch/examples/blob/main/distributed/tensor_parallelism/tensor_parallel_example.py
 """
 
+plugin_registry = trt.get_plugin_registry()
+plugin_library = ctypes.CDLL("/code/data_parallelism/tensor_parallelism/auto-deploy/plugins/build/libnvinfer_plugin_tensorrt_llm.so")
+# Iterate over all registered plugin creators
+for plugin_creator in plugin_registry.plugin_creator_list:
+    print(f"Plugin Name: {plugin_creator.name}, Namespace: {plugin_creator.plugin_namespace}")
 
+######################converter imports##################
+from torch_tensorrt.dynamo.conversion import (
+    ConversionContext,
+    dynamo_tensorrt_converter,
+)
+from torch_tensorrt.dynamo.conversion.converter_utils import get_trt_tensor
+from torch_tensorrt.fx.converters.converter_utils import set_layer_name
+import tensorrt as trt
+
+TRT_LLM_PLUGIN_NAMESPACE= "tensorrt_llm"
+#import tensorrt_llm
+
+
+@dynamo_tensorrt_converter(torch.ops._c10d_functional.all_gather_into_tensor.default)
+def aten_ops_all_gather_into_tensor_nccl(
+    ctx: ConversionContext,
+    target: Target,
+    args: Tuple[Argument, ...],
+    kwargs: Dict[str, Argument],
+    name: str,
+):# type: ignore
+    print("Inserting All Gather plugin")
+    plug_inputs = [args[0]]
+    plugin_registry = trt.get_plugin_registry()
+    plugin_creator = plugin_registry.get_plugin_creator(
+        "AllGather", "1", TRT_LLM_PLUGIN_NAMESPACE
+    )
+    assert plugin_creator, f"Unabled to find plugin creator with name AllGather"
+
+    import os
+    #check if group_size and group_name which are args[1] and args[2]
+    _rank = int(os.environ["RANK"])
+    _world_size = int(os.environ["WORLD_SIZE"])
+    group = list(range(_world_size))
+    group = trt.PluginField("group", np.array(group, dtype=np.int32), trt.PluginFieldType.INT32)
+
+    p_dtype = trt.float16
+    pf_type = trt.PluginField(
+        "type_id", np.array([int(p_dtype)], np.int32), trt.PluginFieldType.INT32
+    )
+
+    pfc = trt.PluginFieldCollection([group, pf_type])
+    allgather = plugin_creator.create_plugin("allgather", pfc)
+
+    layer = ctx.net.add_plugin_v2(plug_inputs, allgather)
+
+    set_layer_name(layer, target, name)
+    return layer.get_output(0)
 class ToyModel(nn.Module):
     """MLP based model"""
 
