@@ -261,6 +261,15 @@ wheels = [
 ]
 
 [[package]]
+name = "execnet"
+version = "2.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/bb/ff/b4c0dc78fbe20c3e59c0c7334de0c27eb4001a2b2017999af398bf730817/execnet-2.1.1.tar.gz", hash = "sha256:5189b52c6121c24feae288166ab41b32549c7e2348652736540b9e6e7d4e72e3", size = 166524 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/43/09/2aea36ff60d16dd8879bdb2f5b3ee0ba8d08cbbdcdfe870e695ce3784385/execnet-2.1.1-py3-none-any.whl", hash = "sha256:26dee51f1b80cebd6d0ca8e74dd8745419761d3bef34163928cbebbdc4749fdc", size = 40612 },
+]
+
+[[package]]
 name = "executing"
 version = "2.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1137,6 +1146,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-xdist"
+version = "3.6.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "execnet", marker = "sys_platform == 'linux' or sys_platform == 'windows'" },
+    { name = "pytest", marker = "sys_platform == 'linux' or sys_platform == 'windows'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/41/c4/3c310a19bc1f1e9ef50075582652673ef2bfc8cd62afef9585683821902f/pytest_xdist-3.6.1.tar.gz", hash = "sha256:ead156a4db231eec769737f57668ef58a2084a34b2e55c4a8fa20d861107300d", size = 84060 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6d/82/1d96bf03ee4c0fdc3c0cbe61470070e659ca78dc0086fb88b66c185e2449/pytest_xdist-3.6.1-py3-none-any.whl", hash = "sha256:9ed4adfb68a016610848639bb7e02c9352d5d9f03d04809919e2dafc3be4cca7", size = 46108 },
+]
+
+[[package]]
 name = "pytorch-triton"
 version = "3.1.0+5fe38ffd73"
 source = { registry = "https://download.pytorch.org/whl/nightly/cu124" }
@@ -1635,7 +1657,7 @@ wheels = [
 
 [[package]]
 name = "torch-tensorrt"
-version = "2.5.0.dev0+92d8c27ec"
+version = "2.6.0.dev0+ab1492024"
 source = { editable = "." }
 dependencies = [
     { name = "numpy", marker = "sys_platform == 'linux' or sys_platform == 'windows'" },
@@ -1668,8 +1690,10 @@ dev = [
     { name = "parameterized", marker = "sys_platform == 'linux' or sys_platform == 'windows'" },
     { name = "pre-commit", marker = "sys_platform == 'linux' or sys_platform == 'windows'" },
     { name = "pytest", marker = "sys_platform == 'linux' or sys_platform == 'windows'" },
+    { name = "pytest-xdist", marker = "sys_platform == 'linux' or sys_platform == 'windows'" },
     { name = "pyyaml", marker = "sys_platform == 'linux' or sys_platform == 'windows'" },
     { name = "ruff", marker = "sys_platform == 'linux' or sys_platform == 'windows'" },
+    { name = "typos", marker = "sys_platform == 'linux' or sys_platform == 'windows'" },
 ]
 
 [package.metadata]
@@ -1693,11 +1717,13 @@ dev = [
     { name = "expecttest", specifier = "==0.1.6" },
     { name = "isort" },
     { name = "mypy" },
-    { name = "parameterized" },
+    { name = "parameterized", specifier = ">=0.2.0" },
     { name = "pre-commit", specifier = ">=2.20.0" },
     { name = "pytest" },
+    { name = "pytest-xdist" },
     { name = "pyyaml" },
     { name = "ruff" },
+    { name = "typos" },
 ]
 
 [[package]]
@@ -1780,6 +1806,23 @@ version = "4.12.2"
 source = { registry = "https://download.pytorch.org/whl/nightly/cu124" }
 wheels = [
     { url = "https://download.pytorch.org/whl/nightly/typing_extensions-4.12.2-py3-none-any.whl" },
+]
+
+[[package]]
+name = "typos"
+version = "1.24.6"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/92/44/0d3f5a153919bc757573fe89200ae77609a440b1b774d04e5f816839ee58/typos-1.24.6.tar.gz", hash = "sha256:0feda2aab59fc1c32cd1f382ea8676b4ef0921086ab172a43e69e5bb19206993", size = 1107518 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ad/6b/75bf4f3de20c5edc17919b55b592dffade154ccee7c65512b2f506514082/typos-1.24.6-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:be576cd0afcbf72bd0fa4129d457b146627c837db189eae7ee83b9fc311dacef", size = 3523299 },
+    { url = "https://files.pythonhosted.org/packages/b8/d0/c4f711a402c938c87ea3ee2bc173bb6ecb1a9869b662245eb97c56571f18/typos-1.24.6-py3-none-macosx_11_0_arm64.whl", hash = "sha256:49fc10b7d28a6a016678c92a5b3d091ea46a2a7e09d5d1122045e8509378f785", size = 3447219 },
+    { url = "https://files.pythonhosted.org/packages/b1/a9/d63c5be9eb7a0105ae6b1257c6bae98595d52198b8c53359f6b93618d9f8/typos-1.24.6-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:dfbd7c40af229d680c2b9bc90e846eea70626bde9608f77a57c4e72145a5aa5f", size = 4893439 },
+    { url = "https://files.pythonhosted.org/packages/38/56/3aebbf2f950a15343396cbfc4773d4de5dc632867210051516cb4faef83f/typos-1.24.6-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b8eb05826d6ff1f8747e1c7d9991a10e13b644b2eb7e2855cc79a37ebb1104f1", size = 3532218 },
+    { url = "https://files.pythonhosted.org/packages/3b/6f/d8ecddc82501b01a0e956173060c3b216bc9a7ee4c66d5b5c07dd02305c6/typos-1.24.6-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e2abbe9dc208f6da9fddbf9bb281a3944d66188df9b3d43ad6f2f99721713446", size = 4215931 },
+    { url = "https://files.pythonhosted.org/packages/86/09/e0cf7945287e4d7a61403237a1df2def419734a6a8e41f06829187f96ee2/typos-1.24.6-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:7291555c82e81e305ab3e10cb04d0f7d49ccecc1ced322c60f4619f6a14c7225", size = 3892579 },
+    { url = "https://files.pythonhosted.org/packages/1f/02/336eb3315e1d53a780d98511b465cd801be9151294bcbb50a603d503b5de/typos-1.24.6-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:7e27c307c26549a7986f2701f161358df29543e818bf9d6d81f0a81ca5ddeff5", size = 4224637 },
+    { url = "https://files.pythonhosted.org/packages/71/b3/fafc840ea619798a7f98765c76eeb13e9227175509172f7a730cbd633396/typos-1.24.6-py3-none-win32.whl", hash = "sha256:cd725db3823c319f7e97b4e8e9fa4af143568b1c7d834f66c584bf86b9691f94", size = 2431615 },
+    { url = "https://files.pythonhosted.org/packages/93/ec/2842da6226fe6c3c5a030364f65d99901c06507f6575c5f8250bc3602d9f/typos-1.24.6-py3-none-win_amd64.whl", hash = "sha256:12972e7a8be14fe5e7f0392de0b228a0098748959d1fecc35c4e8eab3efc04c0", size = 2568857 },
 ]
 
 [[package]]
