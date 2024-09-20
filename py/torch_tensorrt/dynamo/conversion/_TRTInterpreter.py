@@ -769,7 +769,7 @@ class TRTInterpreter(torch.fx.Interpreter):  # type: ignore[misc]
         else:
             return converter(self.ctx, submod, args, kwargs, self._cur_node_name)
 
-    def call_function(self, target: str, args: Any, kwargs: Any) -> Any:
+    def call_function(self, target: Target, args: Any, kwargs: Any) -> Any:
         # TODO: Why is this stateful? We should be able to take in the inputs
         converter_packet = CONVERTERS.get(self._cur_node)
         if converter_packet is None:
